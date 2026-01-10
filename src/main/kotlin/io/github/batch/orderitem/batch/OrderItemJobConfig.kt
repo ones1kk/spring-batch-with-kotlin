@@ -1,15 +1,15 @@
 package io.github.batch.orderitem.batch
 
 import io.github.batch.orderitem.batch.support.*
+import org.springframework.batch.core.Job
+import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.StepScope
-import org.springframework.batch.core.job.Job
 import org.springframework.batch.core.job.builder.JobBuilder
-import org.springframework.batch.core.partition.Partitioner
+import org.springframework.batch.core.partition.support.Partitioner
 import org.springframework.batch.core.repository.JobRepository
-import org.springframework.batch.core.step.Step
 import org.springframework.batch.core.step.builder.StepBuilder
-import org.springframework.batch.infrastructure.item.database.JdbcCursorItemReader
-import org.springframework.batch.infrastructure.item.database.builder.JdbcCursorItemReaderBuilder
+import org.springframework.batch.item.database.JdbcCursorItemReader
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -54,7 +54,7 @@ class OrderItemJobConfig(
     @Bean
     fun orderItemSetupStep(orderItemSetupTasklet: OrderItemSetupTasklet): Step =
         StepBuilder("orderItemSetupStep", jobRepository)
-            .tasklet(orderItemSetupTasklet)
+            .tasklet(orderItemSetupTasklet, transactionManager)
             .transactionManager(transactionManager)
             .build()
 
@@ -75,7 +75,7 @@ class OrderItemJobConfig(
         orderIdReader: JdbcCursorItemReader<Long>,
         orderItemDeleteWriter: OrderItemDeleteWriter,
     ): Step = StepBuilder("orderItemDeleteSlaveStep", jobRepository)
-        .chunk<Long, Long>(1000)
+        .chunk<Long, Long>(1000, transactionManager)
         .reader(orderIdReader)
         .writer(orderItemDeleteWriter)
         .transactionManager(transactionManager)
@@ -84,14 +84,14 @@ class OrderItemJobConfig(
     @Bean
     fun orderItemCleanupStep(orderItemCleanupTasklet: OrderItemCleanupTasklet): Step =
         StepBuilder("orderItemCleanupStep", jobRepository)
-            .tasklet(orderItemCleanupTasklet)
+            .tasklet(orderItemCleanupTasklet, transactionManager)
             .transactionManager(transactionManager)
             .build()
 
     @Bean
     fun orderItemHoldLockStep(orderItemHoldLockTasklet: OrderItemHoldLockTasklet): Step =
         StepBuilder("orderItemHoldLockStep", jobRepository)
-            .tasklet(orderItemHoldLockTasklet)
+            .tasklet(orderItemHoldLockTasklet, transactionManager)
             .transactionManager(transactionManager)
             .build()
 

@@ -3,7 +3,7 @@ spring:
     name: batch
 
   datasource:
-    url: jdbc:mysql://localhost:13306?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:13306/batch_db?useSSL=false&serverTimezone=Asia/Seoul
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
@@ -21,3 +21,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+  batch:
+    job:
+      enabled: false

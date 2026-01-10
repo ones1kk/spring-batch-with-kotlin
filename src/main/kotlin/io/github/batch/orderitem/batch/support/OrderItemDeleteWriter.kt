@@ -1,7 +1,7 @@
 package io.github.batch.orderitem.batch.support
 
-import org.springframework.batch.infrastructure.item.Chunk
-import org.springframework.batch.infrastructure.item.ItemWriter
+import org.springframework.batch.item.Chunk
+import org.springframework.batch.item.ItemWriter
 import org.springframework.jdbc.core.JdbcTemplate
 
 class OrderItemDeleteWriter(

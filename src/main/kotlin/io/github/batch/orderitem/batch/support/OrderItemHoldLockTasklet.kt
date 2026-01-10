@@ -6,7 +6,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.jdbc.core.JdbcTemplate
 
-class OrderItemHoldLockTasklet(
+open class OrderItemHoldLockTasklet(
     private val jdbcTemplate: JdbcTemplate,
     private val minOrderId: Long,
     private val maxOrderId: Long,
